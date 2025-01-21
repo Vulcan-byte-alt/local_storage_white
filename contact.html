@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="favicon.png" type="image/x-icon">
+    <title>Contact Us - Self-Storage Awards</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+     <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @keyframes gradient {
+            0% {
+                background-position: 0% 50%;
+            }
+
+            50% {
+                background-position: 100% 50%;
+            }
+
+            100% {
+                background-position: 0% 50%;
+            }
+        }
+
+        .gradient-background {
+             background: linear-gradient(-45deg, #94a30b, #cc2464, #23d5ab,  #1e7b9c);
+            background-size: 400% 400%;
+            animation: gradient 15s ease infinite;
+        }
+
+        .noise-bg {
+            position: relative;
+            overflow: hidden;
+        }
+
+        .noise-bg::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+           background: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%' height='100%' filter='url(%23noise)' opacity='0.1'/%3E%3C/svg%3E");
+            opacity: 0.05;
+            pointer-events: none;
+        }
+
+        .custom-scrollbar {
+            scrollbar-width: thin;
+            scrollbar-color: #4B5563 transparent;
+        }
+
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background-color: #4B5563;
+            border-radius: 3px;
+        }
+       .fade-in {
+            opacity: 0;
+            transform: translateY(40px);
+            transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+        }
+
+        .fade-in.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .zoom-hover {
+            transition: transform 0.3s ease-in-out;
+        }
+
+        .zoom-hover:hover {
+            transform: scale(1.05);
+        }
+
+
+         .box-hover {
+            transition: transform 0.6s ease-in-out, box-shadow 0.3s ease-in-out;
+        }
+
+        .box-hover:hover {
+            transform: scale(1.05);
+             box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+        }
+
+      
+        html {
+            scroll-behavior: smooth;
+        }
+        .loading {
+            overflow: hidden;
+        }
+
+         html {
+            overflow-x: hidden;
+        }
+    </style>
+</head>
+
+<body class="bg-white custom-scrollbar">
+   <!-- Navigation -->
+  <nav class="fixed top-0 w-full z-40 transition-all duration-500 bg-white/95 backdrop-blur-sm" id="mainNav">
+        <div class="container mx-auto px-6">
+            <div class="py-4 flex items-center justify-between">
+                <!-- Logo -->
+                <div class="flex items-center gap-12">
+                     <a href="index.html">
+                         <img src="logo_white.png" alt="Storage Awards Logo"
+                        class="h-8">
+                     </a>
+                    <!-- Desktop Menu -->
+                    <div class="hidden md:flex gap-8 text-gray-800/80" id="desktopMenu">
+                        <a href="index.html#home" class="hover:text-gray-900 transition-colors">Home</a>
+                        <a href="index.html#categories" class="hover:text-gray-900 transition-colors">Categories</a>
+                        <a href="index.html#facilities" class="hover:text-gray-900 transition-colors">Facilities</a>
+                        <a href="index.html#leaderboard" class="hover:text-gray-900 transition-colors">Leaderboard</a>
+                        <a href="index.html#submit" class="hover:text-gray-900 transition-colors">Submit</a>
+                        <a href="index.html#about" class="hover:text-gray-900 transition-colors">About</a>
+                        <a href="contact.html" class="hover:text-gray-900 transition-colors">Contact</a>
+                        <a href="faq.html" class="hover:text-gray-900 transition-colors">FAQ</a>
+                    </div>
+                </div>
+
+                <!-- Desktop Buttons -->
+                <div class="hidden md:flex items-center gap-4">
+                    <button
+                        class="px-6 py-2 text-gray-800 border border-gray-800/20 rounded-full hover:bg-gray-800/10 transition-all">
+                        Login
+                    </button>
+                    <button
+                        class="px-6 py-2 bg-gradient-to-r from-yellow-500 to-yellow-600 text-black rounded-full hover:opacity-90 transition-all font-semibold">
+                        Submit Facility
+                    </button>
+                </div>
+
+                <!-- Burger Menu Button -->
+                <button id="burgerBtn" class="md:hidden text-gray-800">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M4 6h16M4 12h16M4 18h16" />
+                    </svg>
+                </button>
+            </div>
+        </div>
+
+        <!-- Mobile Menu -->
+        <div id="mobileMenu" class="hidden md:hidden bg-white/95 backdrop-blur-sm">
+            <div class="px-6 py-4 space-y-4">
+                <a href="index.html#home" class="block text-gray-800/80 hover:text-gray-900 transition-colors">Home</a>
+                <a href="index.html#categories"
+                    class="block text-gray-800/80 hover:text-gray-900 transition-colors">Categories</a>
+                <a href="index.html#facilities"
+                    class="block text-gray-800/80 hover:text-gray-900 transition-colors">Facilities</a>
+                <a href="index.html#leaderboard"
+                    class="block text-gray-800/80 hover:text-gray-900 transition-colors">Leaderboard</a>
+                <a href="index.html#submit" class="block text-gray-800/80 hover:text-gray-900 transition-colors">Submit</a>
+                <a href="index.html#about" class="block text-gray-800/80 hover:text-gray-900 transition-colors">About</a>
+                  <a href="contact.html" class="block text-gray-800/80 hover:text-gray-900 transition-colors">Contact</a>
+                <a href="faq.html" class="block text-gray-800/80 hover:text-gray-900 transition-colors">FAQ</a>
+
+                <div class="space-y-4 pt-4 border-t border-gray-800/10">
+                    <button
+                        class="w-full px-6 py-2 text-gray-800 border border-gray-800/20 rounded-full hover:bg-gray-800/10 transition-all">
+                        Login
+                    </button>
+                    <button
+                        class="w-full px-6 py-2 bg-gradient-to-r from-yellow-500 to-yellow-600 text-black rounded-full hover:opacity-90 transition-all font-semibold">
+                        Submit Facility
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <section class="py-20 bg-gray-100/50">
+        <div class="absolute inset-0 gradient-background opacity-10"></div>
+        <div class="noise-bg absolute inset-0"></div>
+        <div class="container mx-auto px-6 max-w-4xl relative z-10">
+             <div class="text-center mb-12 fade-in">
+                <h2 class="text-4xl font-bold text-gray-900 mb-4 pt-8">Contact Us</h2>
+                <p class="text-xl text-gray-800/60">
+                    Have questions? Reach out to our support team.
+                </p>
+            </div>
+            <div class="space-y-6 bg-gray-100 rounded-xl p-8 border border-gray-800/10 fade-in">
+                <p class="text-gray-800 leading-relaxed mb-4">
+                    Please fill out the form below, and a member of our team will be in touch soon. You can also reach
+                    us directly via email at <a href="mailto:support@selfstorageawards.com"
+                        class="text-yellow-500 hover:text-yellow-400 transition-colors">support@selfstorageawards.com</a>
+                    or call us at <a href="tel:555-123-4567"
+                        class="text-yellow-500 hover:text-yellow-400 transition-colors">555-123-4567</a>.
+                </p>
+                <form class="space-y-6">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <label class="block text-gray-900 mb-2">Your Name</label>
+                            <input type="text"
+                                class="w-full px-4 py-2 bg-gray-800/10 rounded-lg text-gray-900 border border-gray-800/10 focus:border-yellow-500 outline-none transition-colors"
+                                required>
+                        </div>
+                        <div>
+                            <label class="block text-gray-900 mb-2">Your Email</label>
+                            <input type="email"
+                                class="w-full px-4 py-2 bg-gray-800/10 rounded-lg text-gray-900 border border-gray-800/10 focus:border-yellow-500 outline-none transition-colors"
+                                required>
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block text-gray-900 mb-2">Your Message</label>
+                        <textarea
+                            class="w-full px-4 py-2 bg-gray-800/10 rounded-lg text-gray-900 border border-gray-800/10 focus:border-yellow-500 outline-none transition-colors h-32 resize-none"
+                            required></textarea>
+                    </div>
+                    <div class="text-center">
+                        <button type="submit"
+                            class="px-8 py-4 bg-gradient-to-r from-yellow-500 to-yellow-600 text-black rounded-full hover:opacity-90 transition-all font-semibold">
+                            Send Message
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </section>
+
+
+     <footer class="py-16 bg-gray-100/50 border-t border-gray-800/10">
+        <div class="container mx-auto px-6">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-12">
+                <!-- Logo section -->
+                <div class="space-y-6 text-center md:text-left">
+                     <a href="index.html">
+                        <img src="logo_white.png" alt="Logo"
+                        class="h-10 mx-auto md:mx-0">
+                     </a>
+                    <p class="text-gray-800/60">Recognizing excellence in self-storage across the nation since 2020.</p>
+                    <div class="flex gap-4 justify-center md:justify-start">
+                        <a href="#" class="p-2 bg-gray-800/5 rounded-lg hover:bg-gray-800/10 transition-colors">
+                            <svg class="w-5 h-5 text-gray-800" fill="currentColor" viewBox="0 0 24 24">
+                                <path
+                                    d="M24 4.557c-.883.392-1.832.656-2.828.775 1.017-.609 1.798-1.574 2.165-2.724-.951.564-2.005.974-3.127 1.195-.897-.957-2.178-1.555-3.594-1.555-3.179 0-5.515 2.966-4.797 6.045-4.091-.205-7.719-2.165-10.148-5.144-1.29 2.213-.669 5.108 1.523 6.574-.806-.026-1.566-.247-2.229-.616-.054 2.281 1.581 4.415 3.949 4.89-.693.188-1.452.232-2.224.084.626 1.956 2.444 3.379 4.6 3.419-2.07 1.623-4.678 2.348-7.29 2.04 2.179 1.397 4.768 2.212 7.548 2.212 9.142 0 14.307-7.721 13.995-14.646.962-.695 1.797-1.562 2.457-2.549z" />
+                            </svg>
+                        </a>
+                        <a href="#" class="p-2 bg-gray-800/5 rounded-lg hover:bg-gray-800/10 transition-colors">
+                            <svg class="w-5 h-5 text-gray-800" fill="currentColor" viewBox="0 0 24 24">
+                                <path
+                                    d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z" />
+                            </svg>
+                        </a>
+                        <a href="#" class="p-2 bg-gray-800/5 rounded-lg hover:bg-gray-800/10 transition-colors">
+                            <svg class="w-5 h-5 text-gray-800" fill="currentColor" viewBox="0 0 24 24">
+                                <path
+                                    d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z" />
+                            </svg>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Quick Links -->
+                <div class="text-center md:text-left">
+                    <h4 class="text-gray-900 font-semibold mb-4">Quick Links</h4>
+                    <ul class="space-y-2">
+                         <li><a href="index.html#about" class="text-gray-800/60 hover:text-gray-900 transition-colors">About Us</a></li>
+                        <li><a href="index.html#categories"
+                                class="text-gray-800/60 hover:text-gray-900 transition-colors">Categories</a>
+                        </li>
+                         <li><a href="index.html#facilities"
+                                class="text-gray-800/60 hover:text-gray-900 transition-colors">Facilities</a>
+                        </li>
+                        <li><a href="index.html#leaderboard"
+                                class="text-gray-800/60 hover:text-gray-900 transition-colors">Leaderboard</a>
+                        </li>
+                        <li><a href="index.html#submit" class="text-gray-800/60 hover:text-gray-900 transition-colors">Submit
+                                Facility</a>
+                        </li>
+                         <li><a href="faq.html" class="text-gray-800/60 hover:text-gray-900 transition-colors">FAQ</a></li>
+                        <li><a href="#" class="text-gray-800/60 hover:text-gray-900 transition-colors">Rules & Guidelines</a>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Resources -->
+                <div class="text-center md:text-left">
+                    <h4 class="text-gray-900 font-semibold mb-4">Resources</h4>
+                    <ul class="space-y-2">
+                        <li><a href="contact.html" class="text-gray-800/60 hover:text-gray-900 transition-colors">Contact Us</a>
+                        </li>
+                        <li><a href="#" class="text-gray-800/60 hover:text-gray-900 transition-colors">Support</a></li>
+                        <li><a href="#" class="text-gray-800/60 hover:text-gray-900 transition-colors">Terms & Conditions</a>
+                        </li>
+                        <li><a href="#" class="text-gray-800/60 hover:text-gray-900 transition-colors">Privacy Policy</a></li>
+                         <li><a href="#" class="text-gray-800/60 hover:text-gray-900 transition-colors">FAQs</a></li>
+                    </ul>
+                </div>
+
+                <!-- Newsletter -->
+                <div class="text-center md:text-left">
+                    <h4 class="text-gray-900 font-semibold mb-4">Newsletter</h4>
+                    <p class="text-gray-800/60 mb-4">Stay updated with the latest news and announcements.</p>
+                    <form class="flex gap-2 max-w-sm mx-auto md:mx-0">
+                        <input type="email" placeholder="Enter your email"
+                            class="flex-1 px-4 py-2 bg-gray-800/10 rounded-lg text-gray-900 border border-gray-800/10 focus:border-yellow-500 outline-none transition-colors">
+                        <button type="submit"
+                            class="px-4 py-2 bg-yellow-500 text-black rounded-lg hover:bg-yellow-400 transition-colors">Subscribe</button>
+                    </form>
+                </div>
+            </div>
+
+            <div class="mt-12 pt-8 border-t border-gray-800/10 text-center">
+                <p class="text-gray-800/40">© 2025 Self-Storage Awards. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+         const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
+            });
+        }, {
+            threshold: 0.1
+        });
+
+        document.querySelectorAll('.fade-in').forEach((el) => observer.observe(el));
+
+         window.addEventListener('scroll', () => {
+            const nav = document.getElementById('mainNav');
+            if (window.scrollY > 50) {
+                nav.classList.add('bg-white/95', 'backdrop-blur-sm');
+            } else {
+                nav.classList.remove('bg-white/95', 'backdrop-blur-sm');
+            }
+        });
+         document.getElementById('burgerBtn').addEventListener('click', function () {
+            const mobileMenu = document.getElementById('mobileMenu');
+            mobileMenu.classList.toggle('hidden');
+        });
+
+        // Close menu when clicking outside
+        document.addEventListener('click', function (e) {
+            const mobileMenu = document.getElementById('mobileMenu');
+            const burgerBtn = document.getElementById('burgerBtn');
+
+            if (!mobileMenu.contains(e.target) && !burgerBtn.contains(e.target) && !mobileMenu.classList.contains('hidden')) {
+                mobileMenu.classList.add('hidden');
+            }
+        });
+    </script>
+
+</body>
+
+</html>

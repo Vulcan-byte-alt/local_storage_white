@@ -1,0 +1,1787 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="favicon.png" type="image/x-icon">
+    <title>Self-Storage Awards - Excellence in Storage</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollToPlugin.min.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @keyframes gradient {
+            0% {
+                background-position: 0% 50%;
+            }
+
+            50% {
+                background-position: 100% 50%;
+            }
+
+            100% {
+                background-position: 0% 50%;
+            }
+        }
+
+        .gradient-background {
+            background: linear-gradient(-45deg, #94a30b, #cc2464, #23d5ab,  #1e7b9c);
+            background-size: 400% 400%;
+            animation: gradient 15s ease infinite;
+        }
+
+        .noise-bg {
+            position: relative;
+            overflow: hidden;
+        }
+
+        .noise-bg::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%' height='100%' filter='url(%23noise)' opacity='0.1'/%3E%3C/svg%3E");
+            opacity: 0.05;
+            pointer-events: none;
+        }
+
+        .custom-scrollbar {
+            scrollbar-width: thin;
+            scrollbar-color: #4B5563 transparent;
+        }
+
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background-color: #4B5563;
+            border-radius: 3px;
+        }
+
+        .fade-in {
+            opacity: 0;
+            transform: translateY(40px);
+            transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+        }
+
+        .fade-in.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .zoom-hover {
+            transition: transform 0.3s ease-in-out;
+        }
+
+        .zoom-hover:hover {
+            transform: scale(1.05);
+        }
+
+
+        .box-hover {
+            transition: transform 0.6s ease-in-out, box-shadow 0.3s ease-in-out;
+        }
+
+        .box-hover:hover {
+            transform: scale(1.05);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        .power-text {
+            opacity: 0;
+            transform: translateY(20px);
+            animation: powerSlide 0.8s ease forwards;
+        }
+
+        .power-text:nth-child(1) {
+            animation-delay: 0.2s;
+        }
+
+        .power-text:nth-child(2) {
+            animation-delay: 0.4s;
+        }
+
+        .power-text:nth-child(3) {
+            animation-delay: 0.6s;
+        }
+
+        .power-text:nth-child(4) {
+            animation-delay: 0.8s;
+        }
+
+        .power-text:nth-child(5) {
+            animation-delay: 1s;
+        }
+
+        @keyframes powerSlide {
+            0% {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            100% {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .gradient-text {
+            background-size: 200% 200%;
+            animation: gradientMove 3s ease infinite;
+        }
+
+        @keyframes gradientMove {
+            0% {
+                background-position: 0% 50%;
+            }
+
+            50% {
+                background-position: 100% 50%;
+            }
+
+            100% {
+                background-position: 0% 50%;
+            }
+        }
+
+        .button-animate {
+            opacity: 0;
+            transform: translateY(20px);
+            animation: buttonSlide 0.8s ease forwards;
+            animation-delay: 1.2s;
+        }
+
+        @keyframes buttonSlide {
+            0% {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            100% {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .stats-animate {
+            opacity: 0;
+            transform: translateX(-20px);
+            animation: statsSlide 0.8s ease forwards;
+            animation-delay: 1.4s;
+        }
+
+        @keyframes statsSlide {
+            0% {
+                opacity: 0;
+                transform: translateX(-20px);
+            }
+
+            100% {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        .loading-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #f9fafb;
+            z-index: 9999;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            transition: transform 1s cubic-bezier(0.7, 0, 0.3, 1);
+        }
+
+        .loading-screen.loaded {
+            transform: translateY(-100%);
+        }
+
+        .loader {
+            width: 48px;
+            height: 48px;
+            border: 3px solid #222;
+            border-bottom-color: transparent;
+            border-radius: 50%;
+            animation: loader 1s linear infinite;
+            display: block;
+        }
+
+        @keyframes loader {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        .loading {
+            overflow: hidden;
+        }
+
+        .loading-tips {
+            display: block;
+            font-size: 0.875rem;
+            opacity: 0.6;
+            max-width: 300px;
+            text-align: center;
+            margin-top: 1rem;
+            color: #222;
+        }
+
+        html {
+            overflow-x: hidden;
+        }
+    </style>
+</head>
+
+<body class="bg-white custom-scrollbar">
+
+    <div class="loading-screen" id="loadingScreen">
+        <div class="loader"></div>
+        <div class="loading-tips fade-up" style="animation-delay: 0.5s">
+            "Did you know? Over 50,000 storage facilities compete for excellence each year."
+        </div>
+    </div>
+
+
+    <!-- Navigation -->
+    <nav class="fixed top-0 w-full z-40 transition-all duration-500 bg-white/95 backdrop-blur-sm" id="mainNav">
+        <div class="container mx-auto px-6">
+            <div class="py-4 flex items-center justify-between">
+                <!-- Logo -->
+                <div class="flex items-center gap-12">
+                    <img src="logo_white.png" alt="Storage Awards Logo"
+                        class="h-8">
+                    <!-- Desktop Menu -->
+                    <div class="hidden md:flex gap-8 text-gray-800/80" id="desktopMenu">
+                        <a href="#home" class="hover:text-gray-900 transition-colors">Home</a>
+                        <a href="#categories" class="hover:text-gray-900 transition-colors">Categories</a>
+                        <a href="#facilities" class="hover:text-gray-900 transition-colors">Facilities</a>
+                        <a href="#leaderboard" class="hover:text-gray-900 transition-colors">Leaderboard</a>
+                        <a href="#submit" class="hover:text-gray-900 transition-colors">Submit</a>
+                        <a href="#about" class="hover:text-gray-900 transition-colors">About</a>
+                        <a href="#contact" class="hover:text-gray-900 transition-colors">Contact</a>
+                        <a href="#faq" class="hover:text-gray-900 transition-colors">FAQ</a>
+                    </div>
+                </div>
+
+                <!-- Desktop Buttons -->
+                <div class="hidden md:flex items-center gap-4">
+                    <button
+                        class="px-6 py-2 text-gray-800 border border-gray-800/20 rounded-full hover:bg-gray-800/10 transition-all">
+                        Login
+                    </button>
+                    <button
+                        class="px-6 py-2 bg-gradient-to-r from-yellow-500 to-yellow-600 text-black rounded-full hover:opacity-90 transition-all font-semibold">
+                        Submit Facility
+                    </button>
+                </div>
+
+                <!-- Burger Menu Button -->
+                <button id="burgerBtn" class="md:hidden text-gray-800">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M4 6h16M4 12h16M4 18h16" />
+                    </svg>
+                </button>
+            </div>
+        </div>
+
+        <!-- Mobile Menu -->
+        <div id="mobileMenu" class="hidden md:hidden bg-white/95 backdrop-blur-sm">
+            <div class="px-6 py-4 space-y-4">
+                <a href="#home" class="block text-gray-800/80 hover:text-gray-900 transition-colors">Home</a>
+                <a href="#categories"
+                    class="block text-gray-800/80 hover:text-gray-900 transition-colors">Categories</a>
+                <a href="#facilities"
+                    class="block text-gray-800/80 hover:text-gray-900 transition-colors">Facilities</a>
+                <a href="#leaderboard"
+                    class="block text-gray-800/80 hover:text-gray-900 transition-colors">Leaderboard</a>
+                <a href="#submit" class="block text-gray-800/80 hover:text-gray-900 transition-colors">Submit</a>
+                <a href="#about" class="block text-gray-800/80 hover:text-gray-900 transition-colors">About</a>
+                <a href="#contact" class="block text-gray-800/80 hover:text-gray-900 transition-colors">Contact</a>
+                <a href="#faq" class="block text-gray-800/80 hover:text-gray-900 transition-colors">FAQ</a>
+
+                <div class="space-y-4 pt-4 border-t border-gray-800/10">
+                    <button
+                        class="w-full px-6 py-2 text-gray-800 border border-gray-800/20 rounded-full hover:bg-gray-800/10 transition-all">
+                        Login
+                    </button>
+                    <button
+                        class="w-full px-6 py-2 bg-gradient-to-r from-yellow-500 to-yellow-600 text-black rounded-full hover:opacity-90 transition-all font-semibold">
+                        Submit Facility
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+
+    <section id="home" class="min-h-screen relative overflow-hidden bg-white pt-20">
+        <div class="absolute inset-0 gradient-background opacity-10"></div>
+        <div class="noise-bg absolute inset-0"></div>
+        <div class="container mx-auto px-6 py-10 relative z-10">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center min-h-[80vh]">
+                <div class="space-y-8">
+                    <span
+                        class="px-4 py-2 rounded-full bg-yellow-500/10 text-yellow-500 text-sm font-medium power-text">
+                        Now Accepting 2025 Submissions
+                    </span>
+                    <h1 class="text-5xl lg:text-7xl font-bold text-gray-900 leading-tight">
+                        <span class="power-text block">Recognizing</span>
+                        <span class="power-text block mt-4">
+                            <span
+                                class="bg-gradient-to-r from-yellow-500 to-yellow-600 bg-clip-text text-transparent gradient-text">
+                                Excellence
+                            </span>
+                            <span>in</span>
+                        </span>
+                        <span class="power-text block mt-4">Self-Storage</span>
+                    </h1>
+                    <p class="text-xl text-gray-800/80 leading-relaxed max-w-lg power-text">
+                        Join the most prestigious awards in the self-storage industry. Vote for outstanding facilities
+                        and celebrate excellence together.
+                    </p>
+                    <div class="flex flex-wrap gap-6">
+                        <button
+                            class="px-8 py-4 bg-gradient-to-r from-yellow-500 to-yellow-600 text-black rounded-full hover:opacity-90 transition-all font-semibold button-animate">
+                            Start Voting
+                        </button>
+                        <button
+                            class="px-8 py-4 bg-gray-800/10 text-gray-900 rounded-full hover:bg-gray-800/20 transition-all button-animate">
+                            View Categories
+                        </button>
+                    </div>
+                    <div class="flex gap-8 pt-8">
+                        <div class="stats-animate">
+                            <p id="facilitiesCount" class="text-3xl font-bold text-gray-900">0</p>
+                            <p class="text-gray-800/60">Facilities</p>
+                        </div>
+                        <div class="stats-animate">
+                            <p id="votesCount" class="text-3xl font-bold text-gray-900">0</p>
+                            <p class="text-gray-800/60">Votes Cast</p>
+                        </div>
+                        <div class="stats-animate">
+                            <p id="categoriesCount" class="text-3xl font-bold text-gray-900">0</p>
+                            <p class="text-gray-800/60">Categories</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="relative fade-in">
+                    <div
+                        class="aspect-square rounded-2xl overflow-hidden border border-gray-800/10 shadow-2xl zoom-hover">
+                        <video src="hero.mp4" alt="Award Ceremony" class="w-full h-full object-cover" autoplay loop
+                            muted></video>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Categories Section -->
+    <section id="categories" class="py-20 bg-white">
+        <div class="container mx-auto px-6">
+            <div class="text-center mb-16 fade-in">
+                <h2 class="text-4xl font-bold text-gray-900 mb-4">Award Categories</h2>
+                <p class="text-xl text-gray-800/60 max-w-2xl mx-auto">
+                    Recognizing excellence across multiple aspects of self-storage services
+                </p>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <div
+                    class="bg-gray-100 rounded-xl p-8 border border-gray-800/10 hover:border-yellow-500/50 transition-all fade-in box-hover">
+                    <span class="text-4xl mb-6 block">🏆</span>
+                    <h3 class="text-xl font-semibold text-gray-900 mb-3">Best Indoor Storage</h3>
+                    <p class="text-gray-800/60 mb-6">Recognizing facilities with exceptional indoor storage solutions
+                        and
+                        climate control.</p>
+                    <button class="text-yellow-500 hover:text-yellow-400 transition-colors font-medium">
+                        View Nominees →
+                    </button>
+                </div>
+                <div
+                    class="bg-gray-100 rounded-xl p-8 border border-gray-800/10 hover:border-yellow-500/50 transition-all fade-in box-hover">
+                    <span class="text-4xl mb-6 block">📦</span>
+                    <h3 class="text-xl font-semibold text-gray-900 mb-3">Best Outdoor Storage</h3>
+                    <p class="text-gray-800/60 mb-6">Recognizing facilities with exceptional outdoor storage solutions
+                        and security measures.</p>
+                    <button class="text-yellow-500 hover:text-yellow-400 transition-colors font-medium">
+                        View Nominees →
+                    </button>
+                </div>
+                <div
+                    class="bg-gray-100 rounded-xl p-8 border border-gray-800/10 hover:border-yellow-500/50 transition-all fade-in box-hover">
+                    <span class="text-4xl mb-6 block"> 🚐</span>
+                    <h3 class="text-xl font-semibold text-gray-900 mb-3">Best RV Storage</h3>
+                    <p class="text-gray-800/60 mb-6">Recognizing facilities with specialized storage solutions and
+                        features for recreational vehicles.</p>
+                    <button class="text-yellow-500 hover:text-yellow-400 transition-colors font-medium">
+                        View Nominees →
+                    </button>
+                </div>
+                <div
+                    class="bg-gray-100 rounded-xl p-8 border border-gray-800/10 hover:border-yellow-500/50 transition-all fade-in box-hover">
+                    <span class="text-4xl mb-6 block">🔒</span>
+                    <h3 class="text-xl font-semibold text-gray-900 mb-3">Best Security</h3>
+                    <p class="text-gray-800/60 mb-6">Recognizing facilities with exceptional security measures, video
+                        surveillance, and well-lit areas.</p>
+                    <button class="text-yellow-500 hover:text-yellow-400 transition-colors font-medium">
+                        View Nominees →
+                    </button>
+                </div>
+                <div
+                    class="bg-gray-100 rounded-xl p-8 border border-gray-800/10 hover:border-yellow-500/50 transition-all fade-in box-hover">
+                    <span class="text-4xl mb-6 block">🤝</span>
+                    <h3 class="text-xl font-semibold text-gray-900 mb-3">Best Customer Service</h3>
+                    <p class="text-gray-800/60 mb-6">Recognizing facilities with outstanding customer support and
+                        personalized experience.</p>
+                    <button class="text-yellow-500 hover:text-yellow-400 transition-colors font-medium">
+                        View Nominees →
+                    </button>
+                </div>
+                <div
+                    class="bg-gray-100 rounded-xl p-8 border border-gray-800/10 hover:border-yellow-500/50 transition-all fade-in box-hover">
+                    <span class="text-4xl mb-6 block">✨</span>
+                    <h3 class="text-xl font-semibold text-gray-900 mb-3">Most Innovative</h3>
+                    <p class="text-gray-800/60 mb-6">Recognizing facilities with innovative tech implementations, like
+                        mobile app and online booking.</p>
+                    <button class="text-yellow-500 hover:text-yellow-400 transition-colors font-medium">
+                        View Nominees →
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Facility Listings -->
+    <section id="facilities" class="py-20 bg-gray-100/50">
+        <div class="container mx-auto px-6">
+            <div class="text-center mb-16 fade-in">
+                <h2 class="text-4xl font-bold text-gray-900 mb-4">Facility Listings</h2>
+                <p class="text-xl text-gray-800/60 max-w-2xl mx-auto">
+                    See the top facilities in each category and vote for your favorites.
+                </p>
+            </div>
+            <div class="flex flex-wrap gap-6 justify-between items-center mb-12">
+                <div class="flex gap-4">
+                    <button
+                        class="px-4 py-2 bg-gray-800/10 text-gray-900 rounded-lg hover:bg-gray-800/20 transition-all"
+                        id="list-view-btn">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M4 6h16M4 12h16m-7 6h7"></path>
+                        </svg>
+                    </button>
+                    <button class="px-4 py-2 bg-yellow-500/10 text-yellow-500 rounded-lg transition-all"
+                        id="grid-view-btn">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z">
+                            </path>
+                        </svg>
+                    </button>
+                </div>
+                <div class="flex gap-4">
+                    <select id="categoryFilter"
+                        class="px-4 py-2 bg-gray-800/10 text-gray-900 rounded-lg hover:bg-gray-800/20 transition-all">
+                        <option value="all" style="color: black;">All Categories</option>
+                        <option value="indoor" style="color: black;">Best Indoor Storage</option>
+                        <option value="outdoor" style="color: black;">Best Outdoor Storage</option>
+                        <option value="rv" style="color: black;">Best RV Storage</option>
+                        <option value="security" style="color: black;">Best Security</option>
+                        <option value="customer" style="color: black;">Best Customer Service</option>
+                        <option value="innovative" style="color: black;">Most Innovative</option>
+                    </select>
+                    <select
+                        class="px-4 py-2 bg-gray-800/10 text-gray-900 rounded-lg hover:bg-gray-800/20 transition-all">
+                        <option value="" style="color: black;">Sort By</option>
+                        <option value="votes" style="color:black">Most Votes</option>
+                        <option value="newest" style="color:black">Newest</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8" id="facility-cards-container">
+                <!-- Facility Card -->
+                <div class="bg-gray-100 rounded-xl overflow-hidden border border-gray-800/10 hover:border-yellow-500/50 transition-all fade-in zoom-hover box-hover"
+                    data-category="indoor">
+                    <div class="relative">
+                        <img src="indoor.png" alt="Facility" class="w-full h-48 object-cover">
+                        <div class="absolute top-4 right-4 flex gap-2">
+                            <span class="px-3 py-1 bg-blue-500/80 backdrop-blur-md rounded-full text-white text-sm">
+                                Indoor Storage
+                            </span>
+                        </div>
+                        <div class="absolute top-4 left-4">
+                            <span class="text-2xl">👑</span>
+                        </div>
+                    </div>
+                    <div class="p-6">
+                        <h3 class="text-xl font-semibold text-gray-900 mb-3">Premium Indoor Storage Solutions</h3>
+                        <div class="flex gap-4 mb-6">
+                            <div class="text-gray-800/60">
+                                <span class="font-semibold text-gray-900">1,234</span> votes
+                            </div>
+                            <div class="h-4 w-px bg-gray-800/20"></div>
+                            <div class="text-yellow-500">
+                                Category Leader
+                            </div>
+                        </div>
+                        <p class="text-sm text-gray-800/60 mb-4">You can vote once per day</p>
+                        <div class="flex justify-between items-center">
+                            <a href="indoor.html">
+                                <button
+                                    class="px-6 py-2 bg-gray-800/10 text-gray-900 rounded-lg hover:bg-gray-800/20 transition-all">
+                                    View Details
+                                </button>
+                            </a>
+                            <div class="voting-controls" data-facility-id="1">
+                                <div class="flex items-center gap-2">
+                                    <button
+                                        class="vote-btn p-2 bg-green-500/10 text-green-500 rounded-lg hover:bg-green-500/20 transition-all group"
+                                        onclick="handleVote(1, 'up')" data-vote-type="up">
+                                        <svg class="w-6 h-6 transform group-hover:-translate-y-1 transition-transform"
+                                            fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M5 15l7-7 7 7">
+                                            </path>
+                                        </svg>
+                                    </button>
+                                    <button
+                                        class="vote-btn p-2 bg-red-500/10 text-red-500 rounded-lg hover:bg-red-500/20 transition-all group"
+                                        onclick="handleVote(1, 'down')" data-vote-type="down">
+                                        <svg class="w-6 h-6 transform group-hover:translate-y-1 transition-transform"
+                                            fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M19 9l-7 7-7-7">
+                                            </path>
+                                        </svg>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="flex gap-2 mt-4">
+                            <button
+                                class="p-2 bg-blue-500/10 text-blue-500 rounded-lg hover:bg-blue-500/20 transition-all"
+                                onclick="shareOnSocial('twitter')">
+                                <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                                    <path
+                                        d="M24 4.557c-.883.392-1.832.656-2.828.775 1.017-.609 1.798-1.574 2.165-2.724-.951.564-2.005.974-3.127 1.195-.897-.957-2.178-1.555-3.594-1.555-3.179 0-5.515 2.966-4.797 6.045-4.091-.205-7.719-2.165-10.148-5.144-1.29 2.213-.669 5.108 1.523 6.574-.806-.026-1.566-.247-2.229-.616-.054 2.281 1.581 4.415 3.949 4.89-.693.188-1.452.232-2.224.084.626 1.956 2.444 3.379 4.6 3.419-2.07 1.623-4.678 2.348-7.29 2.04 2.179 1.397 4.768 2.212 7.548 2.212 9.142 0 14.307-7.721 13.995-14.646.962-.695 1.797-1.562 2.457-2.549z" />
+                                </svg>
+                            </button>
+                            <button
+                                class="p-2 bg-blue-500/10 text-blue-500 rounded-lg hover:bg-blue-500/20 transition-all"
+                                onclick="shareOnSocial('facebook')">
+                                <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                                    <path d="M18 2h-3a5 5 0 00-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 011-1h3z"></path>
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <div class="bg-gray-100 rounded-xl overflow-hidden border border-gray-800/10 hover:border-yellow-500/50 transition-all fade-in zoom-hover box-hover"
+                    data-category="rv">
+                    <div class="relative">
+                        <img src="RV.png" alt="Facility" class="w-full h-48 object-cover">
+                        <div class="absolute top-4 right-4 flex gap-2">
+                            <span class="px-3 py-1 bg-blue-500/80 backdrop-blur-md rounded-full text-white text-sm">
+                                RV Storage
+                            </span>
+                        </div>
+                        <div class="absolute top-4 left-4">
+                            <span class="text-2xl">👑</span>
+                        </div>
+                    </div>
+                    <div class="p-6">
+                        <h3 class="text-xl font-semibold text-gray-900 mb-3">Premium RV Solutions</h3>
+                        <div class="flex gap-4 mb-6">
+                            <div class="text-gray-800/60">
+                                <span class="font-semibold text-gray-900">1,234</span> votes
+                            </div>
+                            <div class="h-4 w-px bg-gray-800/20"></div>
+                            <div class="text-yellow-500">
+                                Category Leader
+                            </div>
+                        </div>
+                        <p class="text-sm text-gray-800/60 mb-4">You can vote once per day</p>
+                        <div class="flex justify-between items-center">
+                            <a href="rv.html">
+                                <button
+                                    class="px-6 py-2 bg-gray-800/10 text-gray-900 rounded-lg hover:bg-gray-800/20 transition-all">
+                                    View Details
+                                </button>
+                            </a>
+                            <div class="voting-controls" data-facility-id="2">
+                                <div class="flex items-center gap-2">
+                                    <button
+                                        class="vote-btn p-2 bg-green-500/10 text-green-500 rounded-lg hover:bg-green-500/20 transition-all group"
+                                        onclick="handleVote(2, 'up')" data-vote-type="up">
+                                        <svg class="w-6 h-6 transform group-hover:-translate-y-1 transition-transform"
+                                            fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M5 15l7-7 7 7">
+                                            </path>
+                                        </svg>
+                                    </button>
+                                    <button
+                                        class="vote-btn p-2 bg-red-500/10 text-red-500 rounded-lg hover:bg-red-500/20 transition-all group"
+                                        onclick="handleVote(2, 'down')" data-vote-type="down">
+                                        <svg class="w-6 h-6 transform group-hover:translate-y-1 transition-transform"
+                                            fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M19 9l-7 7-7-7">
+                                            </path>
+                                        </svg>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="flex gap-2 mt-4">
+                            <button
+                                class="p-2 bg-blue-500/10 text-blue-500 rounded-lg hover:bg-blue-500/20 transition-all"
+                                onclick="shareOnSocial('twitter')">
+                                <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                                    <path
+                                        d="M24 4.557c-.883.392-1.832.656-2.828.775 1.017-.609 1.798-1.574 2.165-2.724-.951.564-2.005.974-3.127 1.195-.897-.957-2.178-1.555-3.594-1.555-3.179 0-5.515 2.966-4.797 6.045-4.091-.205-7.719-2.165-10.148-5.144-1.29 2.213-.669 5.108 1.523 6.574-.806-.026-1.566-.247-2.229-.616-.054 2.281 1.581 4.415 3.949 4.89-.693.188-1.452.232-2.224.084.626 1.956 2.444 3.379 4.6 3.419-2.07 1.623-4.678 2.348-7.29 2.04 2.179 1.397 4.768 2.212 7.548 2.212 9.142 0 14.307-7.721 13.995-14.646.962-.695 1.797-1.562 2.457-2.549z" />
+                                </svg>
+                            </button>
+                            <button
+                                class="p-2 bg-blue-500/10 text-blue-500 rounded-lg hover:bg-blue-500/20 transition-all"
+                                onclick="shareOnSocial('facebook')">
+                                <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                                    <path d="M18 2h-3a5 5 0 00-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 011-1h3z"></path>
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <div class="bg-gray-100 rounded-xl overflow-hidden border border-gray-800/10 hover:border-yellow-500/50 transition-all fade-in zoom-hover box-hover"
+                    data-category="outdoor">
+                    <div class="relative">
+                        <img src="outdoor.png" alt="Facility" class="w-full h-48 object-cover">
+                        <div class="absolute top-4 right-4 flex gap-2">
+                            <span class="px-3 py-1 bg-blue-500/80 backdrop-blur-md rounded-full text-white text-sm">
+                                Outdoor Storage
+                            </span>
+                        </div>
+                        <div class="absolute top-4 left-4">
+                            <span class="text-2xl">👑</span>
+                        </div>
+                    </div>
+                    <div class="p-6">
+                        <h3 class="text-xl font-semibold text-gray-900 mb-3">Premium Outdoor Storage Solutions</h3>
+                        <div class="flex gap-4 mb-6">
+                            <div class="text-gray-800/60">
+                                <span class="font-semibold text-gray-900">1,234</span> votes
+                            </div>
+                            <div class="h-4 w-px bg-gray-800/20"></div>
+                            <div class="text-yellow-500">
+                                Category Leader
+                            </div>
+                        </div>
+                        <p class="text-sm text-gray-800/60 mb-4">You can vote once per day</p>
+                        <div class="flex justify-between items-center">
+                              <a href="outdoor.html">
+                                <button
+                                    class="px-6 py-2 bg-gray-800/10 text-gray-900 rounded-lg hover:bg-gray-800/20 transition-all">
+                                    View Details
+                                </button>
+                            </a>
+                            <div class="voting-controls" data-facility-id="3">
+                                <div class="flex items-center gap-2">
+                                    <button
+                                        class="vote-btn p-2 bg-green-500/10 text-green-500 rounded-lg hover:bg-green-500/20 transition-all group"
+                                        onclick="handleVote(3, 'up')" data-vote-type="up">
+                                        <svg class="w-6 h-6 transform group-hover:-translate-y-1 transition-transform"
+                                            fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M5 15l7-7 7 7">
+                                            </path>
+                                        </svg>
+                                    </button>
+                                    <button
+                                        class="vote-btn p-2 bg-red-500/10 text-red-500 rounded-lg hover:bg-red-500/20 transition-all group"
+                                        onclick="handleVote(3, 'down')" data-vote-type="down">
+                                        <svg class="w-6 h-6 transform group-hover:translate-y-1 transition-transform"
+                                            fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M19 9l-7 7-7-7">
+                                            </path>
+                                        </svg>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="flex gap-2 mt-4">
+                            <button
+                                class="p-2 bg-blue-500/10 text-blue-500 rounded-lg hover:bg-blue-500/20 transition-all"
+                                onclick="shareOnSocial('twitter')">
+                                <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                                    <path
+                                        d="M24 4.557c-.883.392-1.832.656-2.828.775 1.017-.609 1.798-1.574 2.165-2.724-.951.564-2.005.974-3.127 1.195-.897-.957-2.178-1.555-3.594-1.555-3.179 0-5.515 2.966-4.797 6.045-4.091-.205-7.719-2.165-10.148-5.144-1.29 2.213-.669 5.108 1.523 6.574-.806-.026-1.566-.247-2.229-.616-.054 2.281 1.581 4.415 3.949 4.89-.693.188-1.452.232-2.224.084.626 1.956 2.444 3.379 4.6 3.419-2.07 1.623-4.678 2.348-7.29 2.04 2.179 1.397 4.768 2.212 7.548 2.212 9.142 0 14.307-7.721 13.995-14.646.962-.695 1.797-1.562 2.457-2.549z" />
+                                </svg>
+                            </button>
+                            <button
+                                class="p-2 bg-blue-500/10 text-blue-500 rounded-lg hover:bg-blue-500/20 transition-all"
+                                onclick="shareOnSocial('facebook')">
+                                <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                                    <path d="M18 2h-3a5 5 0 00-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 011-1h3z"></path>
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <div class="bg-gray-100 rounded-xl overflow-hidden border border-gray-800/10 hover:border-yellow-500/50 transition-all fade-in zoom-hover box-hover"
+                    data-category="security">
+                    <div class="relative">
+                        <img src="secure.png" alt="Facility" class="w-full h-48 object-cover">
+                        <div class="absolute top-4 right-4 flex gap-2">
+                            <span class="px-3 py-1 bg-blue-500/80 backdrop-blur-md rounded-full text-white text-sm">
+                                Security
+                            </span>
+                        </div>
+                        <div class="absolute top-4 left-4">
+                            <span class="text-2xl">👑</span>
+                        </div>
+                    </div>
+                    <div class="p-6">
+                        <h3 class="text-xl font-semibold text-gray-900 mb-3">Premium Security Solutions</h3>
+                        <div class="flex gap-4 mb-6">
+                            <div class="text-gray-800/60">
+                                <span class="font-semibold text-gray-900">1,234</span> votes
+                            </div>
+                            <div class="h-4 w-px bg-gray-800/20"></div>
+                            <div class="text-yellow-500">
+                                Category Leader
+                            </div>
+                        </div>
+                        <p class="text-sm text-gray-800/60 mb-4">You can vote once per day</p>
+                        <div class="flex justify-between items-center">
+                             <a href="security.html">
+                                <button
+                                    class="px-6 py-2 bg-gray-800/10 text-gray-900 rounded-lg hover:bg-gray-800/20 transition-all">
+                                    View Details
+                                </button>
+                            </a>
+                            <div class="voting-controls" data-facility-id="4">
+                                <div class="flex items-center gap-2">
+                                    <button
+                                        class="vote-btn p-2 bg-green-500/10 text-green-500 rounded-lg hover:bg-green-500/20 transition-all group"
+                                        onclick="handleVote(4, 'up')" data-vote-type="up">
+                                        <svg class="w-6 h-6 transform group-hover:-translate-y-1 transition-transform"
+                                            fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M5 15l7-7 7 7">
+                                            </path>
+                                        </svg>
+                                    </button>
+                                    <button
+                                        class="vote-btn p-2 bg-red-500/10 text-red-500 rounded-lg hover:bg-red-500/20 transition-all group"
+                                        onclick="handleVote(4, 'down')" data-vote-type="down">
+                                        <svg class="w-6 h-6 transform group-hover:translate-y-1 transition-transform"
+                                            fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M19 9l-7 7-7-7">
+                                            </path>
+                                        </svg>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="flex gap-2 mt-4">
+                            <button
+                                class="p-2 bg-blue-500/10 text-blue-500 rounded-lg hover:bg-blue-500/20 transition-all"
+                                onclick="shareOnSocial('twitter')">
+                                <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                                    <path
+                                        d="M24 4.557c-.883.392-1.832.656-2.828.775 1.017-.609 1.798-1.574 2.165-2.724-.951.564-2.005.974-3.127 1.195-.897-.957-2.178-1.555-3.594-1.555-3.179 0-5.515 2.966-4.797 6.045-4.091-.205-7.719-2.165-10.148-5.144-1.29 2.213-.669 5.108 1.523 6.574-.806-.026-1.566-.247-2.229-.616-.054 2.281 1.581 4.415 3.949 4.89-.693.188-1.452.232-2.224.084.626 1.956 2.444 3.379 4.6 3.419-2.07 1.623-4.678 2.348-7.29 2.04 2.179 1.397 4.768 2.212 7.548 2.212 9.142 0 14.307-7.721 13.995-14.646.962-.695 1.797-1.562 2.457-2.549z" />
+                                </svg>
+                            </button>
+                            <button
+                                class="p-2 bg-blue-500/10 text-blue-500 rounded-lg hover:bg-blue-500/20 transition-all"
+                                onclick="shareOnSocial('facebook')">
+                                <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                                    <path d="M18 2h-3a5 5 0 00-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 011-1h3z"></path>
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <div class="bg-gray-100 rounded-xl overflow-hidden border border-gray-800/10 hover:border-yellow-500/50 transition-all fade-in zoom-hover box-hover"
+                    data-category="customer">
+                    <div class="relative">
+                        <img src="customer4.png" alt="Facility" class="w-full h-48 object-cover">
+                        <div class="absolute top-4 right-4 flex gap-2">
+                            <span class="px-3 py-1 bg-blue-500/80 backdrop-blur-md rounded-full text-white text-sm">
+                                Customer Service
+                            </span>
+                        </div>
+                        <div class="absolute top-4 left-4">
+                            <span class="text-2xl">👑</span>
+                        </div>
+                    </div>
+                    <div class="p-6">
+                        <h3 class="text-xl font-semibold text-gray-900 mb-3">Premium Customer Service</h3>
+                        <div class="flex gap-4 mb-6">
+                            <div class="text-gray-800/60">
+                                <span class="font-semibold text-gray-900">1,234</span> votes
+                            </div>
+                            <div class="h-4 w-px bg-gray-800/20"></div>
+                            <div class="text-yellow-500">
+                                Category Leader
+                            </div>
+                        </div>
+                        <p class="text-sm text-gray-800/60 mb-4">You can vote once per day</p>
+                        <div class="flex justify-between items-center">
+                              <a href="customer.html">
+                                <button
+                                    class="px-6 py-2 bg-gray-800/10 text-gray-900 rounded-lg hover:bg-gray-800/20 transition-all">
+                                    View Details
+                                </button>
+                            </a>
+                            <div class="voting-controls" data-facility-id="5">
+                                <div class="flex items-center gap-2">
+                                    <button
+                                        class="vote-btn p-2 bg-green-500/10 text-green-500 rounded-lg hover:bg-green-500/20 transition-all group"
+                                        onclick="handleVote(5, 'up')" data-vote-type="up">
+                                        <svg class="w-6 h-6 transform group-hover:-translate-y-1 transition-transform"
+                                            fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M5 15l7-7 7 7">
+                                            </path>
+                                        </svg>
+                                    </button>
+                                    <button
+                                        class="vote-btn p-2 bg-red-500/10 text-red-500 rounded-lg hover:bg-red-500/20 transition-all group"
+                                        onclick="handleVote(5, 'down')" data-vote-type="down">
+                                        <svg class="w-6 h-6 transform group-hover:translate-y-1 transition-transform"
+                                            fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M19 9l-7 7-7-7">
+                                            </path>
+                                        </svg>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="flex gap-2 mt-4">
+                            <button
+                                class="p-2 bg-blue-500/10 text-blue-500 rounded-lg hover:bg-blue-500/20 transition-all"
+                                onclick="shareOnSocial('twitter')">
+                                <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                                    <path
+                                        d="M24 4.557c-.883.392-1.832.656-2.828.775 1.017-.609 1.798-1.574 2.165-2.724-.951.564-2.005.974-3.127 1.195-.897-.957-2.178-1.555-3.594-1.555-3.179 0-5.515 2.966-4.797 6.045-4.091-.205-7.719-2.165-10.148-5.144-1.29 2.213-.669 5.108 1.523 6.574-.806-.026-1.566-.247-2.229-.616-.054 2.281 1.581 4.415 3.949 4.89-.693.188-1.452.232-2.224.084.626 1.956 2.444 3.379 4.6 3.419-2.07 1.623-4.678 2.348-7.29 2.04 2.179 1.397 4.768 2.212 7.548 2.212 9.142 0 14.307-7.721 13.995-14.646.962-.695 1.797-1.562 2.457-2.549z" />
+                                </svg>
+                            </button>
+                            <button
+                                class="p-2 bg-blue-500/10 text-blue-500 rounded-lg hover:bg-blue-500/20 transition-all"
+                                onclick="shareOnSocial('facebook')">
+                                <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                                    <path d="M18 2h-3a5 5 0 00-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 011-1h3z"></path>
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <div class="bg-gray-100 rounded-xl overflow-hidden border border-gray-800/10 hover:border-yellow-500/50 transition-all fade-in zoom-hover box-hover"
+                    data-category="innovative">
+                    <div class="relative">
+                        <img src="innovative.png" alt="Facility" class="w-full h-48 object-cover">
+                        <div class="absolute top-4 right-4 flex gap-2">
+                            <span class="px-3 py-1 bg-blue-500/80 backdrop-blur-md rounded-full text-white text-sm">
+                                Most Innovative
+                            </span>
+                        </div>
+                        <div class="absolute top-4 left-4">
+                            <span class="text-2xl">👑</span>
+                        </div>
+                    </div>
+                    <div class="p-6">
+                        <h3 class="text-xl font-semibold text-gray-900 mb-3">Most Innovative Solutions</h3>
+                        <div class="flex gap-4 mb-6">
+                            <div class="text-gray-800/60">
+                                <span class="font-semibold text-gray-900">1,234</span> votes
+                            </div>
+                            <div class="h-4 w-px bg-gray-800/20"></div>
+                            <div class="text-yellow-500">
+                                Category Leader
+                            </div>
+                        </div>
+                        <p class="text-sm text-gray-800/60 mb-4">You can vote once per day</p>
+                        <div class="flex justify-between items-center">
+                              <a href="innovative.html">
+                                <button
+                                    class="px-6 py-2 bg-gray-800/10 text-gray-900 rounded-lg hover:bg-gray-800/20 transition-all">
+                                    View Details
+                                </button>
+                            </a>
+                            <div class="voting-controls" data-facility-id="6">
+                                <div class="flex items-center gap-2">
+                                    <button
+                                        class="vote-btn p-2 bg-green-500/10 text-green-500 rounded-lg hover:bg-green-500/20 transition-all group"
+                                        onclick="handleVote(6, 'up')" data-vote-type="up">
+                                        <svg class="w-6 h-6 transform group-hover:-translate-y-1 transition-transform"
+                                            fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M5 15l7-7 7 7">
+                                            </path>
+                                        </svg>
+                                    </button>
+                                    <button
+                                        class="vote-btn p-2 bg-red-500/10 text-red-500 rounded-lg hover:bg-red-500/20 transition-all group"
+                                        onclick="handleVote(6, 'down')" data-vote-type="down">
+                                        <svg class="w-6 h-6 transform group-hover:translate-y-1 transition-transform"
+                                            fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M19 9l-7 7-7-7">
+                                            </path>
+                                        </svg>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="flex gap-2 mt-4">
+                            <button
+                                class="p-2 bg-blue-500/10 text-blue-500 rounded-lg hover:bg-blue-500/20 transition-all"
+                                onclick="shareOnSocial('twitter')">
+                                <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                                    <path
+                                        d="M24 4.557c-.883.392-1.832.656-2.828.775 1.017-.609 1.798-1.574 2.165-2.724-.951.564-2.005.974-3.127 1.195-.897-.957-2.178-1.555-3.594-1.555-3.179 0-5.515 2.966-4.797 6.045-4.091-.205-7.719-2.165-10.148-5.144-1.29 2.213-.669 5.108 1.523 6.574-.806-.026-1.566-.247-2.229-.616-.054 2.281 1.581 4.415 3.949 4.89-.693.188-1.452.232-2.224.084.626 1.956 2.444 3.379 4.6 3.419-2.07 1.623-4.678 2.348-7.29 2.04 2.179 1.397 4.768 2.212 7.548 2.212 9.142 0 14.307-7.721 13.995-14.646.962-.695 1.797-1.562 2.457-2.549z" />
+                                </svg>
+                            </button>
+                            <button
+                                class="p-2 bg-blue-500/10 text-blue-500 rounded-lg hover:bg-blue-500/20 transition-all"
+                                onclick="shareOnSocial('facebook')">
+                                <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                                    <path d="M18 2h-3a5 5 0 00-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 011-1h3z"></path>
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div    <div class="mt-8 p-4 bg-gray-800/10 backdrop-blur-sm rounded-lg inline-block">
+                <p class="text-gray-800/60 text-sm">Voting Ends In:</p>
+                <div id="countdown" class="text-2xl  text-gray-900"></div>
+            </div>
+    </section>
+
+    <!-- Live Leaderboard -->
+    <section id="leaderboard" class="py-20 bg-white">
+        <div class="container mx-auto px-6">
+            <div class="text-center mb-16 fade-in">
+                <h2 class="text-4xl font-bold text-gray-900 mb-4">Live Leaderboard</h2>
+                <p class="text-xl text-gray-800/60 max-w-2xl mx-auto">
+                    See which facilities are leading in each category.
+                </p>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <div class="bg-gray-100 rounded-xl p-6 border border-gray-800/10 fade-in box-hover">
+                    <h3 class="text-xl font-semibold text-gray-900 mb-3 flex items-center gap-2">
+                        <span class="text-xl">🏆</span> Best Indoor Storage
+                    </h3>
+                    <div class="flex items-center gap-4 mb-4">
+                        <span class="text-2xl">👑</span>
+                        <p class="text-gray-900 font-medium">Facility A </p>
+                    </div>
+                    <p class="text-gray-800/60 text-sm">1,234 votes</p>
+                </div>
+                <div class="bg-gray-100 rounded-xl p-6 border border-gray-800/10 fade-in box-hover">
+                    <h3 class="text-xl font-semibold text-gray-900 mb-3 flex items-center gap-2">
+                        <span class="text-xl">📦</span> Best Outdoor Storage
+                    </h3>
+                    <div class="flex items-center gap-4 mb-4">
+                        <span class="text-2xl">👑</span>
+                        <p class="text-gray-900 font-medium">Facility B </p>
+                    </div>
+                    <p class="text-gray-800/60 text-sm">1,100 votes</p>
+                </div>
+                <div class="bg-gray-100 rounded-xl p-6 border border-gray-800/10 fade-in box-hover">
+                    <h3 class="text-xl font-semibold text-gray-900 mb-3 flex items-center gap-2">
+                        <span class="text-xl">🚐</span> Best RV Storage
+                    </h3>
+                    <div class="flex items-center gap-4 mb-4">
+                        <span class="text-2xl">👑</span>
+                        <p class="text-gray-900 font-medium">Facility C </p>
+                    </div>
+                    <p class="text-gray-800/60 text-sm">900 votes</p>
+                </div>
+                <div class="bg-gray-100 rounded-xl p-6 border border-gray-800/10 fade-in box-hover">
+                    <h3 class="text-xl font-semibold text-gray-900 mb-3 flex items-center gap-2">
+                        <span class="text-xl">🔒</span> Best Security
+                    </h3>
+                    <div class="flex items-center gap-4 mb-4">
+                        <span class="text-2xl">👑</span>
+                        <p class="text-gray-900 font-medium">Facility D</p>
+                    </div>
+                    <p class="text-gray-800/60 text-sm">850 votes</p>
+                </div>
+                <div class="bg-gray-100 rounded-xl p-6 border border-gray-800/10 fade-in box-hover">
+                    <h3 class="text-xl font-semibold text-gray-900 mb-3 flex items-center gap-2">
+                        <span class="text-xl">🤝</span> Best Customer Service
+                    </h3>
+                    <div class="flex items-center gap-4 mb-4">
+                        <span class="text-2xl">👑</span>
+                        <p class="text-gray-900 font-medium">Facility E</p>
+                    </div>
+                    <p class="text-gray-800/60 text-sm">800 votes</p>
+                </div>
+                <div class="bg-gray-100 rounded-xl p-6 border border-gray-800/10 fade-in box-hover">
+                    <h3 class="text-xl font-semibold text-gray-900 mb-3 flex items-center gap-2">
+                        <span class="text-xl">✨</span> Most Innovative
+                    </h3>
+                    <div class="flex items-center gap-4 mb-4">
+                        <span class="text-2xl">👑</span>
+                        <p class="text-gray-900 font-medium">Facility F</p>
+                    </div>
+                    <p class="text-gray-800/60 text-sm">750 votes</p>
+                </div>
+            </div>
+            <div class="mt-8 text-center fade-in">
+                <button class="px-8 py-4 bg-gray-800/10 text-gray-900 rounded-full hover:bg-gray-800/20 transition-all">
+                    View Full Leaderboard
+                </button>
+            </div>
+        </div>
+    </section>
+    <!-- User Testimonials Section -->
+    <section class="py-20 bg-white">
+        <div class="container mx-auto px-6">
+            <div class="text-center mb-16 fade-in">
+                <h2 class="text-4xl font-bold text-gray-900 mb-4">User Testimonials</h2>
+                <p class="text-xl text-gray-800/60 max-w-2xl mx-auto">
+                    See what past winners and participants have to say.
+                </p>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div class="bg-gray-100 rounded-xl p-8 border border-gray-800/10 fade-in box-hover flex flex-col">
+                    <p class="text-gray-800 leading-relaxed mb-4 italic">
+                        "Winning the Self-Storage Award was a game changer for us. The recognition has significantly
+                        boosted
+                        our customer base."
+                    </p>
+                    <div class="flex items-center mt-4">
+                        <img src="client1.jpg" alt="John S." class="rounded-full w-12 h-12 mr-4">
+                        <p class="text-gray-800/60">- John S., Facility Manager</p>
+                    </div>
+                </div>
+                <div class="bg-gray-100 rounded-xl p-8 border border-gray-800/10 fade-in box-hover flex flex-col">
+                    <p class="text-gray-800 leading-relaxed mb-4 italic">
+                        "The submission process was easy, and the results were worth it. Highly recommended for any
+                        self-storage facility."
+                    </p>
+                    <div class="flex items-center mt-4">
+                        <img src="client2.jpg" alt="Lisa M." class="rounded-full w-12 h-12 mr-4">
+                        <p class="text-gray-800/60">- Lisa M., Owner Operator</p>
+                    </div>
+                </div>
+                  <div class="bg-gray-100 rounded-xl p-8 border border-gray-800/10 fade-in box-hover flex flex-col">
+                    <p class="text-gray-800 leading-relaxed mb-4 italic">
+                        "I'm very impressed by the transparency of the voting process. It's great to be recognized by
+                        the
+                        community."
+                    </p>
+                    <div class="flex items-center mt-4">
+                        <img src="client5.png" alt="Carlos P." class="rounded-full w-12 h-12 mr-4">
+                        <p class="text-gray-800/60">- Carlos P., Facility Coordinator</p>
+                    </div>
+                </div>
+                  <div class="bg-gray-100 rounded-xl p-8 border border-gray-800/10 fade-in box-hover flex flex-col">
+                    <p class="text-gray-800 leading-relaxed mb-4 italic">
+                        "Participating in the awards has been an amazing way to showcase what makes our facility unique.
+                        We
+                        are proud to have our facility rated as one of the best."
+                    </p>
+                    <div class="flex items-center mt-4">
+                        <img src="client6.png" alt="Sarah W." class="rounded-full w-12 h-12 mr-4">
+                        <p class="text-gray-800/60">- Sarah W., General Manager</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+
+    <!-- Submission Form -->
+    <section id="submit" class="py-20 bg-white">
+        <div class="container mx-auto px-6 max-w-4xl">
+            <div class="text-center mb-12 fade-in">
+                <h2 class="text-4xl font-bold text-gray-900 mb-4">Enter Your Facility</h2>
+                <p class="text-xl text-gray-800/60">Showcase your excellence and let the community recognize your
+                    achievements.</p>
+            </div>
+
+            <form class="space-y-8 bg-gray-100 rounded-xl p-8 border border-gray-800/10 fade-in">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                        <label class="block text-gray-900 mb-2">Facility Name</label>
+                        <input type="text"
+                            class="w-full px-4 py-2 bg-gray-800/10 rounded-lg text-gray-900 border border-gray-800/10 focus:border-yellow-500 outline-none transition-colors"
+                            required>
+                    </div>
+                    <div>
+                        <label class="block text-gray-900 mb-2">Contact Email</label>
+                        <input type="email"
+                            class="w-full px-4 py-2 bg-gray-800/10 rounded-lg text-gray-900 border border-gray-800/10 focus:border-yellow-500 outline-none transition-colors"
+                            required>
+                    </div>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                        <label class="block text-gray-900 mb-2">Location State</label>
+                        <input type="text"
+                            class="w-full px-4 py-2 bg-gray-800/10 rounded-lg text-gray-900 border border-gray-800/10 focus:border-yellow-500 outline-none transition-colors"
+                            required>
+                    </div>
+                    <div>
+                        <label class="block text-gray-900 mb-2">Location City</label>
+                        <input type="text"
+                            class="w-full px-4 py-2 bg-gray-800/10 rounded-lg text-gray-900 border border-gray-800/10 focus:border-yellow-500 outline-none transition-colors"
+                            required>
+                    </div>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                        <label class="block text-gray-900 mb-2">Zip Code</label>
+                        <input type="number"
+                            class="w-full px-4 py-2 bg-gray-800/10 rounded-lg text-gray-900 border border-gray-800/10 focus:border-yellow-500 outline-none transition-colors"
+                            required>
+                    </div>
+                    <div>
+                        <label class="block text-gray-900 mb-2">Contact Phone</label>
+                        <input type="tel"
+                            class="w-full px-4 py-2 bg-gray-800/10 rounded-lg text-gray-900 border border-gray-800/10 focus:border-yellow-500 outline-none transition-colors"
+                            required>
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-gray-900 mb-2">Categories (Select all that apply)</label>
+                    <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
+                        <label class="flex items-center text-gray-900 cursor-pointer group">
+                            <input type="checkbox" class="mr-2 accent-yellow-500">
+                            <span class="group-hover:text-yellow-500 transition-colors">Indoor Storage</span>
+                        </label>
+                        <label class="flex items-center text-gray-900 cursor-pointer group">
+                            <input type="checkbox" class="mr-2 accent-yellow-500">
+                            <span class="group-hover:text-yellow-500 transition-colors">Outdoor Storage</span>
+                        </label>
+                        <label class="flex items-center text-gray-900 cursor-pointer group">
+                            <input type="checkbox" class="mr-2 accent-yellow-500">
+                            <span class="group-hover:text-yellow-500 transition-colors">RV Storage</span>
+                        </label>
+                        <label class="flex items-center text-gray-900 cursor-pointer group">
+                            <input type="checkbox" class="mr-2 accent-yellow-500">
+                            <span class="group-hover:text-yellow-500 transition-colors">Security</span>
+                        </label>
+                        <label class="flex items-center text-gray-900 cursor-pointer group">
+                            <input type="checkbox" class="mr-2 accent-yellow-500">
+                            <span class="group-hover:text-yellow-500 transition-colors">Customer Service</span>
+                        </label>
+                        <label class="flex items-center text-gray-900 cursor-pointer group">
+                            <input type="checkbox" class="mr-2 accent-yellow-500">
+                            <span class="group-hover:text-yellow-500 transition-colors">Most Innovative</span>
+                        </label>
+                    </div>
+                </div>
+
+
+                <div>
+                    <label class="block text-gray-900 mb-2">Social Media Links (Optional)</label>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <input type="text" placeholder="Facebook"
+                                class="w-full px-4 py-2 bg-gray-800/10 rounded-lg text-gray-900 border border-gray-800/10 focus:border-yellow-500 outline-none transition-colors">
+                        </div>
+                        <div>
+                            <input type="text" placeholder="Twitter"
+                                class="w-full px-4 py-2 bg-gray-800/10 rounded-lg text-gray-900 border border-gray-800/10 focus:border-yellow-500 outline-none transition-colors">
+                        </div>
+                        <div>
+                            <input type="text" placeholder="Instagram"
+                                class="w-full px-4 py-2 bg-gray-800/10 rounded-lg text-gray-900 border border-gray-800/10 focus:border-yellow-500 outline-none transition-colors">
+                        </div>
+                        <div>
+                            <input type="text" placeholder="Website"
+                                class="w-full px-4 py-2 bg-gray-800/10 rounded-lg text-gray-900 border border-gray-800/10 focus:border-yellow-500 outline-none transition-colors">
+                        </div>
+                    </div>
+                </div>
+
+
+                <div>
+                    <label class="block text-gray-900 mb-2">Facility Description (250 words max)</label>
+                    <textarea
+                        class="w-full px-4 py-2 bg-gray-800/10 rounded-lg text-gray-900 border border-gray-800/10 focus:border-yellow-500 outline-none transition-colors h-32 resize-none"
+                        maxlength="1000" required></textarea>
+                </div>
+
+                <div>
+                    <label class="block text-gray-900 mb-2">Upload Photos</label>
+                    <div class="border-2 border-dashed border-gray-800/20 rounded-lg p-8 text-center hover:border-yellow-500/50 transition-colors cursor-pointer"
+                        id="file-upload-area">
+                        <div class="flex flex-col items-center">
+                            <svg class="w-12 h-12 text-gray-800/40 mb-4" fill="none" stroke="currentColor"
+                                viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M12 6v6m0 0v6m0-6h6m-6 0H6">
+                                </path>
+                            </svg>
+                            <p class="text-gray-800/60 mb-2">Drag and drop your photos here</p>
+                            <p class="text-gray-800/40 text-sm">or click to browse</p>
+                        </div>
+                        <input type="file" multiple class="hidden" id="file-input">
+                        <div id="file-preview" class="mt-4"></div>
+                    </div>
+                </div>
+
+                <div class="text-center">
+                    <p class="text-gray-800/60 mb-6">Submission Fee: $14.99</p>
+                    <button type="submit"
+                        class="px-8 py-4 bg-gradient-to-r from-yellow-500 to-yellow-600 text-black rounded-full hover:opacity-90 transition-all font-semibold"
+                        onclick="showCaptchaModal()">
+                        Submit Your Facility
+                    </button>
+                </div>
+            </form>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section id="about" class="py-20 bg-white">
+        <div class="container mx-auto px-6 max-w-4xl">
+            <div class="text-center mb-12 fade-in">
+                <h2 class="text-4xl font-bold text-gray-900 mb-4">About the Self-Storage Awards</h2>
+                <p class="text-xl text-gray-800/60">Learn more about our mission and how we recognize excellence in the
+                    self-storage industry.</p>
+            </div>
+            <div class="space-y-6 bg-gray-100 rounded-xl p-8 border border-gray-800/10 fade-in box-hover">
+                <p class="text-gray-800 leading-relaxed">
+                    The Self-Storage Awards were established in 2020 to celebrate the outstanding achievements of
+                    self-storage facilities across the nation. Our goal is to provide a platform where facilities are
+                    recognized by the community for their dedication to excellence in service, innovation, and security.
+                </p>
+                <p class="text-gray-800 leading-relaxed">
+                    We believe that recognizing and rewarding outstanding facilities is critical for fostering healthy
+                    competition and overall growth in the self-storage industry. Through these awards, we aim to
+                    encourage the highest standards of service and innovation.
+                </p>
+                <p class="text-gray-800 leading-relaxed">
+                    Winners receive medals, digital badges to display on their websites, and significant visibility
+                    within the industry and among their customers. Submitting your facility is a simple way to gain
+                    recognition.
+                </p>
+                <p class="text-gray-800 leading-relaxed">
+                    The voting is open to the public, which helps ensure fair representation and a transparent
+                    evaluation process. We invite you to explore the facilities, vote for your favorites, and submit
+                    your own facilities for consideration.
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Us Section -->
+    <section id="contact" class="py-20 bg-gray-100/50">
+        <div class="container mx-auto px-6 max-w-4xl">
+            <div class="text-center mb-12 fade-in">
+                <h2 class="text-4xl font-bold text-gray-900 mb-4">Contact Us</h2>
+                <p class="text-xl text-gray-800/60">
+                    Have questions? Reach out to our support team.
+                </p>
+            </div>
+            <div class="space-y-6 bg-gray-100 rounded-xl p-8 border border-gray-800/10 fade-in">
+                <p class="text-gray-800 leading-relaxed mb-4">
+                    Please fill out the form below, and a member of our team will be in touch soon. You can also reach
+                    us directly via email at <a href="mailto:support@selfstorageawards.com"
+                        class="text-yellow-500 hover:text-yellow-400 transition-colors">support@selfstorageawards.com</a>
+                    or call us at <a href="tel:555-123-4567"
+                        class="text-yellow-500 hover:text-yellow-400 transition-colors">555-123-4567</a>.
+                </p>
+                <form class="space-y-6">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <label class="block text-gray-900 mb-2">Your Name</label>
+                            <input type="text"
+                                class="w-full px-4 py-2 bg-gray-800/10 rounded-lg text-gray-900 border border-gray-800/10 focus:border-yellow-500 outline-none transition-colors"
+                                required>
+                        </div>
+                        <div>
+                            <label class="block text-gray-900 mb-2">Your Email</label>
+                            <input type="email"
+                                class="w-full px-4 py-2 bg-gray-800/10 rounded-lg text-gray-900 border border-gray-800/10 focus:border-yellow-500 outline-none transition-colors"
+                                required>
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block text-gray-900 mb-2">Your Message</label>
+                        <textarea
+                            class="w-full px-4 py-2 bg-gray-800/10 rounded-lg text-gray-900 border border-gray-800/10 focus:border-yellow-500 outline-none transition-colors h-32 resize-none"
+                            required></textarea>
+                    </div>
+                    <div class="text-center">
+                        <button type="submit"
+                            class="px-8 py-4 bg-gradient-to-r from-yellow-500 to-yellow-600 text-black rounded-full hover:opacity-90 transition-all font-semibold">
+                            Send Message
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <!-- FAQ Section -->
+    <section id="faq" class="py-20 bg-gray-100/50">
+        <div class="container mx-auto px-6 max-w-4xl">
+            <div class="text-center mb-12 fade-in">
+                <h2 class="text-4xl font-bold text-gray-900 mb-4">Frequently Asked Questions</h2>
+                <p class="text-xl text-gray-800/60">
+                    Get answers to your most common questions about the awards.
+                </p>
+            </div>
+            <div class="space-y-8">
+                <div class="bg-gray-100 rounded-xl p-8 border border-gray-800/10 fade-in zoom-hover">
+                    <h3 class="text-xl font-semibold text-gray-900 mb-3">How often can I vote for a facility?</h3>
+                    <p class="text-gray-800/60">
+                        You can vote once per facility per day. This rule helps ensure fair representation.
+                    </p>
+                </div>
+                <div class="bg-gray-100 rounded-xl p-8 border border-gray-800/10 fade-in zoom-hover">
+                    <h3 class="text-xl font-semibold text-gray-900 mb-3">What is the submission fee?</h3>
+                    <p class="text-gray-800/60">
+                        The submission fee is $14.99 per facility. This fee covers the administration costs associated
+                        with the competition.
+                    </p>
+                </div>
+                <div class="bg-gray-100 rounded-xl p-8 border border-gray-800/10 fade-in zoom-hover">
+                    <h3 class="text-xl font-semibold text-gray-900 mb-3">What are the benefits of winning an award?</h3>
+                    <p class="text-gray-800/60">
+                        Winners receive physical medals, digital badges for their website, and are promoted on our
+                        platform to increase their exposure.
+                    </p>
+                </div>
+                <div class="bg-gray-100 rounded-xl p-8 border border-gray-800/10 fade-in zoom-hover">
+                    <h3 class="text-xl font-semibold text-gray-900 mb-3">When does the voting period end?</h3>
+                    <p class="text-gray-800/60">
+                        Voting ends on December 31st, 2025. See our countdown clock on the homepage for the remaining
+                        time.
+                    </p>
+                </div>
+                <div class="bg-gray-100 rounded-xl p-8 border border-gray-800/10 fade-in zoom-hover">
+                    <h3 class="text-xl font-semibold text-gray-900 mb-3">How can I contact customer support?</h3>
+                    <p class="text-gray-800/60">
+                        You can reach our support team via the contact us form, email us directly or give us a call .
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+
+
+    <footer class="py-16 bg-gray-100/50 border-t border-gray-800/10">
+        <div class="container mx-auto px-6">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-12">
+                <!-- Logo section -->
+                <div class="space-y-6 text-center md:text-left">
+                    <img src="logo_white.png" alt="Logo"
+                        class="h-10 mx-auto md:mx-0">
+                    <p class="text-gray-800/60">Recognizing excellence in self-storage across the nation since 2020.</p>
+                    <div class="flex gap-4 justify-center md:justify-start">
+                        <a href="#" class="p-2 bg-gray-800/5 rounded-lg hover:bg-gray-800/10 transition-colors">
+                            <svg class="w-5 h-5 text-gray-800" fill="currentColor" viewBox="0 0 24 24">
+                                <path
+                                    d="M24 4.557c-.883.392-1.832.656-2.828.775 1.017-.609 1.798-1.574 2.165-2.724-.951.564-2.005.974-3.127 1.195-.897-.957-2.178-1.555-3.594-1.555-3.179 0-5.515 2.966-4.797 6.045-4.091-.205-7.719-2.165-10.148-5.144-1.29 2.213-.669 5.108 1.523 6.574-.806-.026-1.566-.247-2.229-.616-.054 2.281 1.581 4.415 3.949 4.89-.693.188-1.452.232-2.224.084.626 1.956 2.444 3.379 4.6 3.419-2.07 1.623-4.678 2.348-7.29 2.04 2.179 1.397 4.768 2.212 7.548 2.212 9.142 0 14.307-7.721 13.995-14.646.962-.695 1.797-1.562 2.457-2.549z" />
+                            </svg>
+                        </a>
+                        <a href="#" class="p-2 bg-gray-800/5 rounded-lg hover:bg-gray-800/10 transition-colors">
+                            <svg class="w-5 h-5 text-gray-800" fill="currentColor" viewBox="0 0 24 24">
+                                <path
+                                    d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z" />
+                            </svg>
+                        </a>
+                        <a href="#" class="p-2 bg-gray-800/5 rounded-lg hover:bg-gray-800/10 transition-colors">
+                            <svg class="w-5 h-5 text-gray-800" fill="currentColor" viewBox="0 0 24 24">
+                                <path
+                                    d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z" />
+                            </svg>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Quick Links -->
+                <div class="text-center md:text-left">
+                    <h4 class="text-gray-900 font-semibold mb-4">Quick Links</h4>
+                    <ul class="space-y-2">
+                        <li><a href="#about" class="text-gray-800/60 hover:text-gray-900 transition-colors">About Us</a></li>
+                        <li><a href="#categories"
+                                class="text-gray-800/60 hover:text-gray-900 transition-colors">Categories</a>
+                        </li>
+                        <li><a href="#facilities"
+                                class="text-gray-800/60 hover:text-gray-900 transition-colors">Facilities</a>
+                        </li>
+                        <li><a href="#leaderboard"
+                                class="text-gray-800/60 hover:text-gray-900 transition-colors">Leaderboard</a>
+                        </li>
+                        <li><a href="#submit" class="text-gray-800/60 hover:text-gray-900 transition-colors">Submit
+                                Facility</a>
+                        </li>
+                        <li><a href="#faq" class="text-gray-800/60 hover:text-gray-900 transition-colors">FAQ</a></li>
+                        <li><a href="#" class="text-gray-800/60 hover:text-gray-900 transition-colors">Rules & Guidelines</a>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Resources -->
+                <div class="text-center md:text-left">
+                    <h4 class="text-gray-900 font-semibold mb-4">Resources</h4>
+                    <ul class="space-y-2">
+                        <li><a href="#contact" class="text-gray-800/60 hover:text-gray-900 transition-colors">Contact Us</a>
+                        </li>
+                        <li><a href="#" class="text-gray-800/60 hover:text-gray-900 transition-colors">Support</a></li>
+                        <li><a href="#" class="text-gray-800/60 hover:text-gray-900 transition-colors">Terms & Conditions</a>
+                        </li>
+                        <li><a href="#" class="text-gray-800/60 hover:text-gray-900 transition-colors">Privacy Policy</a></li>
+                        <li><a href="#" class="text-gray-800/60 hover:text-gray-900 transition-colors">FAQs</a></li>
+                    </ul>
+                </div>
+
+                <!-- Newsletter -->
+                <div class="text-center md:text-left">
+                    <h4 class="text-gray-900 font-semibold mb-4">Newsletter</h4>
+                    <p class="text-gray-800/60 mb-4">Stay updated with the latest news and announcements.</p>
+                    <form class="flex gap-2 max-w-sm mx-auto md:mx-0">
+                        <input type="email" placeholder="Enter your email"
+                            class="flex-1 px-4 py-2 bg-gray-800/10 rounded-lg text-gray-900 border border-gray-800/10 focus:border-yellow-500 outline-none transition-colors">
+                        <button type="submit"
+                            class="px-4 py-2 bg-yellow-500 text-black rounded-lg hover:bg-yellow-400 transition-colors">Subscribe</button>
+                    </form>
+                </div>
+            </div>
+
+            <div class="mt-12 pt-8 border-t border-gray-800/10 text-center">
+                <p class="text-gray-800/40">© 2025 Self-Storage Awards. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <div id="captchaModal"
+        class="hidden fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center">
+        <div class="bg-white rounded-lg p-8 max-w-md w-full mx-4">
+            <h3 class="text-xl font-bold mb-4">Verify you're human</h3>
+            <div class="mb-4">
+                <img src="captcha.jpeg" alt="CAPTCHA" class="w-full rounded-lg">
+            </div>
+            <div class="flex gap-4">
+                <input type="text" placeholder="Enter CAPTCHA" class="flex-1 px-4 py-2 border rounded-lg">
+                <button onclick="verifyCaptcha()"
+                    class="px-6 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600">
+                    Verify
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
+            });
+        }, {
+            threshold: 0.1
+        });
+
+        document.querySelectorAll('.fade-in').forEach((el) => observer.observe(el));
+
+
+        window.addEventListener('scroll', () => {
+            const nav = document.getElementById('mainNav');
+            if (window.scrollY > 50) {
+                nav.classList.add('bg-white/95', 'backdrop-blur-sm');
+            } else {
+                nav.classList.remove('bg-white/95', 'backdrop-blur-sm');
+            }
+        });
+
+
+        const gridViewBtn = document.getElementById('grid-view-btn');
+        const listViewBtn = document.getElementById('list-view-btn');
+        const facilitiesGrid = document.getElementById('facility-cards-container');
+
+        gridViewBtn.addEventListener('click', () => {
+            facilitiesGrid.classList.remove('grid-cols-1');
+            facilitiesGrid.classList.add('md:grid-cols-2', 'lg:grid-cols-3');
+        });
+
+        listViewBtn.addEventListener('click', () => {
+            facilitiesGrid.classList.remove('md:grid-cols-2', 'lg:grid-cols-3');
+            facilitiesGrid.classList.add('grid-cols-1');
+        });
+
+        function handleVote(facilityId, voteType) {
+            // Check if user has voted today
+            const lastVoteDate = localStorage.getItem(`lastVote_${facilityId}`);
+            const today = new Date().toDateString();
+
+            if (lastVoteDate === today) {
+                alert('You can only vote once per day for each facility');
+                return;
+            }
+            // Show CAPTCHA verification
+            showCaptchaModal();
+
+            // Store vote timestamp
+            localStorage.setItem(`lastVote_${facilityId}`, today);
+            // Animate feedback
+            const btn = document.querySelector(`[data-facility-id="${facilityId}"] [data-vote-type="${voteType}"]`);
+            btn.classList.add('scale-110');
+            setTimeout(() => btn.classList.remove('scale-110'), 200);
+
+            // Show thank you message
+            const thankYou = document.createElement('div');
+            thankYou.className = 'fixed top-4 right-4 bg-green-500 text-white px-6 py-3 rounded-lg shadow-lg z-50';
+            thankYou.textContent = 'Thank you for voting!';
+            document.body.appendChild(thankYou);
+            setTimeout(() => thankYou.remove(), 3000);
+        }
+
+        // Handle Category Filtering
+        const categoryFilter = document.getElementById('categoryFilter');
+        const facilityCards = document.querySelectorAll('[data-category]');
+
+        categoryFilter.addEventListener('change', function () {
+            const selectedCategory = this.value;
+
+            facilityCards.forEach(card => {
+                const cardCategory = card.dataset.category;
+                if (selectedCategory === 'all' || cardCategory === selectedCategory) {
+                    card.style.display = 'block';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        });
+
+        function shareOnSocial(platform) {
+            const url = encodeURIComponent(window.location.href);
+            const text = encodeURIComponent('Check out this amazing storage facility!');
+
+            let shareUrl = '';
+            if (platform === 'twitter') {
+                shareUrl = `https://twitter.com/intent/tweet?url=${url}&text=${text}`;
+            } else if (platform === 'facebook') {
+                shareUrl = `https://www.facebook.com/sharer/sharer.php?u=${url}`;
+            }
+
+            window.open(shareUrl, '_blank', 'width=600,height=400');
+        }
+
+
+        function updateCountdown() {
+            const endDate = new Date('2025-12-31T23:59:59').getTime();
+            const now = new Date().getTime();
+            const distance = endDate - now;
+
+            const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+
+            document.getElementById('countdown').innerHTML = `${days}d ${hours}h ${minutes}m`;
+        }
+
+        setInterval(updateCountdown, 60000);
+        updateCountdown();
+
+        // Function to handle file uploads
+        const fileInput = document.getElementById('file-input');
+        const filePreview = document.getElementById('file-preview');
+        const fileUploadArea = document.getElementById('file-upload-area');
+        fileUploadArea.addEventListener('click', () => fileInput.click());
+
+        fileInput.addEventListener('change', () => {
+            filePreview.innerHTML = '';
+            const files = Array.from(fileInput.files);
+            files.forEach(file => {
+                const reader = new FileReader();
+                reader.onload = (event) => {
+                    const img = document.createElement('img');
+                    img.src = event.target.result;
+                    img.alt = file.name;
+                    img.className = 'w-20 h-20 object-cover rounded-lg mr-2 mb-2';
+                    filePreview.appendChild(img);
+
+                };
+                reader.readAsDataURL(file);
+            })
+        });
+
+        fileUploadArea.addEventListener('dragover', (event) => {
+            event.preventDefault();
+            fileUploadArea.classList.add('border-yellow-500');
+        });
+
+        fileUploadArea.addEventListener('dragleave', () => {
+            fileUploadArea.classList.remove('border-yellow-500')
+        })
+        fileUploadArea.addEventListener('drop', (event) => {
+            event.preventDefault();
+            fileUploadArea.classList.remove('border-yellow-500')
+            fileInput.files = event.dataTransfer.files;
+            const changeEvent = new Event('change');
+            fileInput.dispatchEvent(changeEvent);
+        });
+
+    </script>
+
+    <script>
+        function animateNumber(elementId, target) {
+            let current = 0;
+            const element = document.getElementById(elementId);
+            const duration = 2000; // 2 seconds
+            const steps = 60;
+            const increment = target / steps;
+            const interval = duration / steps;
+
+            const timer = setInterval(() => {
+                current += increment;
+                if (current >= target) {
+                    current = target;
+                    clearInterval(timer);
+                }
+                element.textContent = Math.round(current).toLocaleString();
+            }, interval);
+        }
+
+        // Start animations when the page loads
+        document.addEventListener('DOMContentLoaded', () => {
+            setTimeout(() => {
+                animateNumber('facilitiesCount', 500);
+                animateNumber('votesCount', 25000);
+                animateNumber('categoriesCount', 12);
+            }, 1400); // Delay to match with stats animation
+        });
+
+        function showCaptchaModal() {
+            document.getElementById('captchaModal').classList.remove('hidden');
+        }
+
+        function hideCaptchaModal() {
+            document.getElementById('captchaModal').classList.add('hidden');
+        }
+
+        function verifyCaptcha() {
+            // Replace with actual CAPTCHA verification logic
+            hideCaptchaModal();
+            alert('CAPTCHA verification successful. Submit the form!');
+        }
+
+        document.getElementById('burgerBtn').addEventListener('click', function () {
+            const mobileMenu = document.getElementById('mobileMenu');
+            mobileMenu.classList.toggle('hidden');
+        });
+
+        // Close menu when clicking outside
+        document.addEventListener('click', function (e) {
+            const mobileMenu = document.getElementById('mobileMenu');
+            const burgerBtn = document.getElementById('burgerBtn');
+
+            if (!mobileMenu.contains(e.target) && !burgerBtn.contains(e.target) && !mobileMenu.classList.contains('hidden')) {
+                mobileMenu.classList.add('hidden');
+            }
+        });
+
+        document.body.classList.add('loading');
+
+        const tips = [
+            "Did you know? Over 50,000 storage facilities compete for excellence each year.",
+            "Our awards recognize innovation in self-storage design and service.",
+            "Join thousands of voters in celebrating industry excellence.",
+            "Loading your premium storage awards experience..."
+        ];
+
+        let tipIndex = 0;
+        const tipElement = document.querySelector('.loading-tips');
+
+        function changeTip() {
+            // Animate the current tip out
+            gsap.to(tipElement, {
+                y: -20, // Slide up
+                opacity: 0,
+                duration: 0.5,
+                ease: 'power2.in',
+                onComplete: () => {
+                    // Change the text content
+                    tipElement.textContent = tips[tipIndex];
+                    tipIndex = (tipIndex + 1) % tips.length;
+
+                    // Animate the new tip in
+                    gsap.fromTo(tipElement, {
+                        y: 20,  // Start below
+                        opacity: 0,
+                    }, {
+                        y: 0,   // Slide up
+                        opacity: 1,
+                        duration: 0.5,
+                        ease: 'power2.out'
+                    });
+                }
+            });
+        }
+
+
+        // Initialize the tips before anything is loaded
+        tipElement.textContent = tips[tipIndex];
+        tipIndex = (tipIndex + 1) % tips.length;
+        setInterval(changeTip, 3000);
+
+        function hideLoader() {
+            const loadingScreen = document.getElementById('loadingScreen');
+            loadingScreen.classList.add('loaded');
+            document.body.classList.remove('loading');
+
+            // Start content animations after loader is hidden
+            setTimeout(() => {
+                animateNumber('facilitiesCount', 500);
+                animateNumber('votesCount', 25000);
+                animateNumber('categoriesCount', 12);
+            }, 1000);
+        }
+
+        function checkVideoLoaded() {
+            const video = document.querySelector('video');
+            if (video.readyState >= 3) {
+                hideLoader();
+            } else {
+                video.addEventListener('canplay', hideLoader);
+            }
+        }
+
+
+        // Call checkVideoLoaded to start the process
+        checkVideoLoaded();
+    </script>
+
+</body>
+
+</html>
